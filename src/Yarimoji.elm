@@ -9,6 +9,7 @@ module Yarimoji
         , yariCheckEmoji
         , yariReplacebyEmoji
         , emojidb
+        , initYmojiModel
         )
 
 {-| ❤️😺 Simple and light Elm package for emojis 😃❤️.
@@ -36,7 +37,7 @@ Elm and Elixir, promoted by [Yarilabs](http://www.yarilabs.com/).
 
 # Functions for emoji picker
 
-@docs update, ymojiPickup
+@docs update, ymojiPickup, initYmojiModel
 
 
 # Other utils functions
