@@ -215,7 +215,7 @@ yariFindEmoji str =
     emojidb
         |> List.filter
             (\tup ->
-                Regex.contains (helperPadToRegex (Tuple.second tup)) str
+                Regex.contains (emojiRegex (Tuple.second tup)) str
             )
 
 
@@ -223,7 +223,7 @@ yariFindEmoji str =
 -}
 yariReplacebyEmoji : String -> ( String, String ) -> String
 yariReplacebyEmoji str tup =
-    Regex.replace Regex.All (Tuple.second tup |> helperPadToRegex) (\_ -> Tuple.first tup) str
+    Regex.replace Regex.All (Tuple.second tup |> emojiRegex) (\_ -> Tuple.first tup) str
 
 
 {-| Check if exist any emoji on string
@@ -234,18 +234,20 @@ yariReplacebyEmoji str tup =
 -}
 yariCheckEmoji : String -> Bool
 yariCheckEmoji str =
-    List.any (\tup -> Regex.contains (Tuple.second tup |> helperPadToRegex) str) emojidb
+    emojidb
+        |> List.any
+            (\tup -> Regex.contains (Tuple.second tup |> emojiRegex) str)
 
 
 
 {- Helper function to padRight to match and replace on user input -}
 
 
-helperPadToRegex : String -> Regex.Regex
-helperPadToRegex str =
+emojiRegex : String -> Regex.Regex
+emojiRegex str =
     str
         |> Regex.escape
-        |> String.padRight 1 ' '
+        |> (\s -> String.append s "($|\\s)")
         |> Regex.regex
 
 
