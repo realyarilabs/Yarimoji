@@ -1,15 +1,15 @@
 module Yarimoji
     exposing
-        ( YmojiMsg
-        , update
-        , YmojiModel
-        , ymojiPickup
-        , yariMojiTranslate
-        , yariFindEmoji
-        , yariCheckEmoji
-        , yariReplacebyEmoji
+        ( YmojiModel
+        , YmojiMsg
         , emojidb
         , initYmojiModel
+        , update
+        , yariCheckEmoji
+        , yariFindEmoji
+        , yariMojiTranslate
+        , yariReplacebyEmoji
+        , ymojiPickup
         )
 
 {-| ❤️😺 Simple and light Elm package for emojis 😃❤️.
@@ -106,7 +106,7 @@ type YmojiMsg
     update msg model =
         case msg of
             YmojiMsg msg ->
-                (!) { model | ymojiModel = (Ymoji.update msg model.ymojiModel) } []
+                (!) { model | ymojiModel = Ymoji.update msg model.ymojiModel } []
 
 
     -- View
@@ -114,7 +114,7 @@ type YmojiMsg
     view : Model -> Html Msg
     view model =
         div []
-            [ (Ymoji.ymojiPickup SetNewMessage YmojiMsg model.ymojiModel)
+            [ Ymoji.ymojiPickup SetNewMessage YmojiMsg model.ymojiModel
             , input [ onInput SetNewMessage, value model.newMessage ] []
             ]
 
@@ -146,31 +146,30 @@ ymojiPickup msg ymojiMsg ymodel =
                     [ text ymoji
                     ]
         in
-            span []
-                [ span
-                    [ widgeBtnTogStyle
-                    ]
-                    [ text "😊"
-                    ]
-                , div
-                    [ widgetPickStyle
-                    ]
-                    [ (div
-                        [ onClick (ToggleYmoji)
-                        , widgetPickHeaderStyle
-                        ]
-                        [ text "x"
-                        ]
-                        |> Html.map ymojiMsg
-                      )
-                    , emojidb
-                        |> List.map mapToHtmlYmoji
-                        |> div [ ymojiListContainerStyle ]
-                    ]
+        span []
+            [ span
+                [ widgeBtnTogStyle
                 ]
+                [ text "😊"
+                ]
+            , div
+                [ widgetPickStyle
+                ]
+                [ div
+                    [ onClick ToggleYmoji
+                    , widgetPickHeaderStyle
+                    ]
+                    [ text "x"
+                    ]
+                    |> Html.map ymojiMsg
+                , emojidb
+                    |> List.map mapToHtmlYmoji
+                    |> div [ ymojiListContainerStyle ]
+                ]
+            ]
     else
         span
-            [ onClick (ToggleYmoji)
+            [ onClick ToggleYmoji
             , widgeBtnTogStyle
             ]
             [ text "😊"
@@ -215,7 +214,7 @@ yariFindEmoji str =
     emojidb
         |> List.filter
             (\tup ->
-                (Regex.contains (helperPadToRegex (Tuple.second tup)) str)
+                Regex.contains (helperPadToRegex (Tuple.second tup)) str
             )
 
 
@@ -223,7 +222,7 @@ yariFindEmoji str =
 -}
 yariReplacebyEmoji : String -> ( String, String ) -> String
 yariReplacebyEmoji str tup =
-    Regex.replace (Regex.All) (Tuple.second tup |> helperPadToRegex) (\_ -> Tuple.first tup) str
+    Regex.replace Regex.All (Tuple.second tup |> helperPadToRegex) (\_ -> Tuple.first tup) str
 
 
 {-| Check if exist any emoji on string
