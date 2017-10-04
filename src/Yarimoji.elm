@@ -1,32 +1,33 @@
 module Yarimoji
     exposing
-        ( YmojiMsg
-        , update
-        , YmojiModel
-        , ymojiPickup
-        , yariMojiTranslate
-        , yariFindEmoji
-        , yariCheckEmoji
-        , yariReplacebyEmoji
+        ( YmojiModel
+        , YmojiMsg
         , emojidb
         , initYmojiModel
+        , update
+        , yariCheckEmoji
+        , yariFindEmoji
+        , yariMojiTranslate
+        , yariReplacebyEmoji
+        , ymojiPickup
         )
 
 {-| ❤️😺 Simple and light Elm package for emojis 😃❤️.
 
-This package have functions to search from match string on input field and
-translate to emoji or else use a emoji picker for your elm app,
-only contains a database with a few emojis.
+This package has functions to search for ascii emojis in a string and
+replace them with the correspondent unicode.
+It also provides an emoji picker for your elm webapp, so you can express yourself properly.
+Right now it only contains a few emojis, but more to come in the future.
 
-You can use this package for string replace of emojis and/ or
+You can use this package to replace emojis in a string (ascii -> unicode) and/ or
 emoji picker if you want:
 
   - yariFindEmoji, yariMojiTranslate for (string find and replace).
-  - use emoji picker like example in update function (used for emoji picker).
+  - use emoji picker like in the example in update function (used for emoji picker).
 
-😎 **Still free to contribute with this package. We need tests and more emojis** 😉
+😎 **Feel free to contribute with this package. We need more tests and more emojis** 😉
 
-The proposal of this package is to add emojis to an web chat opensource make with
+The proposal of this package is to add emojis to a web chat opensource made with
 Elm and Elixir, promoted by [Yarilabs](http://www.yarilabs.com/).
 
 
@@ -106,7 +107,7 @@ type YmojiMsg
     update msg model =
         case msg of
             YmojiMsg msg ->
-                (!) { model | ymojiModel = (Ymoji.update msg model.ymojiModel) } []
+                (!) { model | ymojiModel = Ymoji.update msg model.ymojiModel } []
 
 
     -- View
@@ -114,7 +115,7 @@ type YmojiMsg
     view : Model -> Html Msg
     view model =
         div []
-            [ (Ymoji.ymojiPickup SetNewMessage YmojiMsg model.ymojiModel)
+            [ Ymoji.ymojiPickup SetNewMessage YmojiMsg model.ymojiModel
             , input [ onInput SetNewMessage, value model.newMessage ] []
             ]
 
@@ -146,31 +147,30 @@ ymojiPickup msg ymojiMsg ymodel =
                     [ text ymoji
                     ]
         in
-            span []
-                [ span
-                    [ widgeBtnTogStyle
-                    ]
-                    [ text "😊"
-                    ]
-                , div
-                    [ widgetPickStyle
-                    ]
-                    [ (div
-                        [ onClick (ToggleYmoji)
-                        , widgetPickHeaderStyle
-                        ]
-                        [ text "x"
-                        ]
-                        |> Html.map ymojiMsg
-                      )
-                    , emojidb
-                        |> List.map mapToHtmlYmoji
-                        |> div [ ymojiListContainerStyle ]
-                    ]
+        span []
+            [ span
+                [ widgeBtnTogStyle
                 ]
+                [ text "😊"
+                ]
+            , div
+                [ widgetPickStyle
+                ]
+                [ div
+                    [ onClick ToggleYmoji
+                    , widgetPickHeaderStyle
+                    ]
+                    [ text "x"
+                    ]
+                    |> Html.map ymojiMsg
+                , emojidb
+                    |> List.map mapToHtmlYmoji
+                    |> div [ ymojiListContainerStyle ]
+                ]
+            ]
     else
         span
-            [ onClick (ToggleYmoji)
+            [ onClick ToggleYmoji
             , widgeBtnTogStyle
             ]
             [ text "😊"
@@ -215,7 +215,7 @@ yariFindEmoji str =
     emojidb
         |> List.filter
             (\tup ->
-                (Regex.contains (helperPadToRegex (Tuple.second tup)) str)
+                Regex.contains (emojiRegex (Tuple.second tup)) str
             )
 
 
@@ -223,7 +223,7 @@ yariFindEmoji str =
 -}
 yariReplacebyEmoji : String -> ( String, String ) -> String
 yariReplacebyEmoji str tup =
-    Regex.replace (Regex.All) (Tuple.second tup |> helperPadToRegex) (\_ -> Tuple.first tup) str
+    Regex.replace Regex.All (Tuple.second tup |> emojiRegex) (\_ -> Tuple.first tup) str
 
 
 {-| Check if exist any emoji on string
@@ -234,18 +234,20 @@ yariReplacebyEmoji str tup =
 -}
 yariCheckEmoji : String -> Bool
 yariCheckEmoji str =
-    List.any (\tup -> Regex.contains (Tuple.second tup |> helperPadToRegex) str) emojidb
+    emojidb
+        |> List.any
+            (\tup -> Regex.contains (Tuple.second tup |> emojiRegex) str)
 
 
 
 {- Helper function to padRight to match and replace on user input -}
 
 
-helperPadToRegex : String -> Regex.Regex
-helperPadToRegex str =
+emojiRegex : String -> Regex.Regex
+emojiRegex str =
     str
         |> Regex.escape
-        |> String.padRight 1 ' '
+        |> (\s -> String.append s "($|\\s)")
         |> Regex.regex
 
 
