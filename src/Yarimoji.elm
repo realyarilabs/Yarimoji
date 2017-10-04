@@ -14,19 +14,20 @@ module Yarimoji
 
 {-| ❤️😺 Simple and light Elm package for emojis 😃❤️.
 
-This package have functions to search from match string on input field and
-translate to emoji or else use a emoji picker for your elm app,
-only contains a database with a few emojis.
+This package has functions to search for ascii emojis in a string and
+replace them with the correspondent unicode.
+It also provides an emoji picker for your elm webapp, so you can express yourself properly.
+Right now it only contains a few emojis, but more to come in the future.
 
-You can use this package for string replace of emojis and/ or
+You can use this package to replace emojis in a string (ascii -> unicode) and/ or
 emoji picker if you want:
 
   - yariFindEmoji, yariMojiTranslate for (string find and replace).
-  - use emoji picker like example in update function (used for emoji picker).
+  - use emoji picker like in the example in update function (used for emoji picker).
 
-😎 **Still free to contribute with this package. We need tests and more emojis** 😉
+😎 **Feel free to contribute with this package. We need more tests and more emojis** 😉
 
-The proposal of this package is to add emojis to an web chat opensource make with
+The proposal of this package is to add emojis to a web chat opensource made with
 Elm and Elixir, promoted by [Yarilabs](http://www.yarilabs.com/).
 
 
