@@ -16,3 +16,4 @@ this package.
 #### Contributors
 
 - Helder Pinto @ [Yarilabs](http://www.yarilabs.com/)
+- Xavier Francisco @ [Yarilabs](http://www.yarilabs.com/)
