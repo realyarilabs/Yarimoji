@@ -201,11 +201,11 @@ yariMojiTranslate stringToTranslate emojidb =
 
 {-|
 
-    Find and replace ex:
-        yariMojiTranslateAll "This string :D is the best string :D . :D "
+    find and replace all emojis
+        yariMojiTranslateAll "This string :D is the best string :D."
 
     -- output
-        "This string 😃 is the best string 😃 . 😃"
+        "This string 😃 is the best string 😃."
 -}
 yariMojiTranslateAll : String -> String
 yariMojiTranslateAll string =
