@@ -11,6 +11,7 @@ import Yarimoji
         , yariCheckEmoji
         , yariFindEmoji
         , yariMojiTranslate
+        , yariMojiTranslateAll
         )
 
 
@@ -106,25 +107,21 @@ translateEmojiTest =
         [ test "emoji in string" <|
             \() ->
                 "Hello guys :D"
-                    |> yariFindEmoji
-                    |> yariMojiTranslate "Hello guys :D"
+                    |> yariMojiTranslateAll
                     |> Expect.equal "Hello guys 😃"
         , test "many emoji in string" <|
             \() ->
                 "This string :) is the best string :p . >:-o"
-                    |> yariFindEmoji
-                    |> yariMojiTranslate "This string :) is the best string :p . >:-o"
+                    |> yariMojiTranslateAll
                     |> Expect.equal "This string 😊 is the best string 😛 . 😠"
         , test "emoji followed by exclamation point" <|
             \() ->
                 "Things:p!"
-                    |> yariFindEmoji
-                    |> yariMojiTranslate "Things:p!"
+                    |> yariMojiTranslateAll
                     |> Expect.equal "Things:p!"
         , test "url, has unwanted emoji after protocol" <|
             \() ->
                 "http://www.google.com"
-                    |> yariFindEmoji
-                    |> yariMojiTranslate "http://www.google.com"
+                    |> yariMojiTranslateAll
                     |> Expect.equal "http://www.google.com"
         ]

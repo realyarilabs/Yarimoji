@@ -8,6 +8,7 @@ module Yarimoji
         , yariCheckEmoji
         , yariFindEmoji
         , yariMojiTranslate
+        , yariMojiTranslateAll
         , yariReplacebyEmoji
         , ymojiPickup
         )
@@ -55,7 +56,7 @@ Elm and Elixir, promoted by [Yarilabs](http://www.yarilabs.com/).
 import Html exposing (..)
 import Html.Events exposing (onClick)
 import Json.Decode as Json
-import Regex exposing (regex)
+import Regex as R
 import YarimojiStyles exposing (..)
 
 
@@ -195,7 +196,12 @@ yariMojiTranslate stringToTranslate emojidb =
     emojidb
         |> List.head
         |> Maybe.withDefault ( "", "" )
-        |> (\tup -> yariReplacebyEmoji stringToTranslate tup)
+        |> yariReplacebyEmoji stringToTranslate
+
+
+yariMojiTranslateAll : String -> String
+yariMojiTranslateAll string =
+    List.foldl (flip yariReplacebyEmoji) string (yariFindEmoji string)
 
 
 {-| Find emoji on a string
@@ -214,16 +220,28 @@ yariFindEmoji : String -> List ( String, String )
 yariFindEmoji str =
     emojidb
         |> List.filter
-            (\tup ->
-                Regex.contains (emojiRegex (Tuple.second tup)) str
+            (\( _, asciiEmoji ) ->
+                R.contains (emojiRegex asciiEmoji) str
             )
 
 
 {-| Replaces all matched keys of emojis on a determinate string
 -}
 yariReplacebyEmoji : String -> ( String, String ) -> String
-yariReplacebyEmoji str tup =
-    Regex.replace Regex.All (Tuple.second tup |> emojiRegex) (\_ -> Tuple.first tup) str
+yariReplacebyEmoji str ( unicodeEmoji, asciiEmoji ) =
+    str
+        |> R.replace R.All
+            (asciiEmoji |> emojiRegex)
+            (\match ->
+                let
+                    asciiLength =
+                        String.length asciiEmoji
+                in
+                if String.length match.match == asciiLength then
+                    unicodeEmoji
+                else
+                    unicodeEmoji ++ String.dropLeft asciiLength match.match
+            )
 
 
 {-| Check if exist any emoji on string
@@ -236,19 +254,19 @@ yariCheckEmoji : String -> Bool
 yariCheckEmoji str =
     emojidb
         |> List.any
-            (\tup -> Regex.contains (Tuple.second tup |> emojiRegex) str)
+            (\( _, asciiEmoji ) -> R.contains (asciiEmoji |> emojiRegex) str)
 
 
 
 {- Helper function to padRight to match and replace on user input -}
 
 
-emojiRegex : String -> Regex.Regex
+emojiRegex : String -> R.Regex
 emojiRegex str =
     str
-        |> Regex.escape
+        |> R.escape
         |> (\s -> String.append s "($|\\s)")
-        |> Regex.regex
+        |> R.regex
 
 
 {-| Emoji database list
