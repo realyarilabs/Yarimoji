@@ -148,31 +148,31 @@ ymojiPickup msg ymojiMsg ymodel =
                     [ text ymoji
                     ]
         in
-        span []
-            [ span
-                [ widgeBtnTogStyle
-                ]
-                [ text "😊"
-                ]
-            , div
-                [ widgetPickStyle
-                ]
-                [ div
-                    [ onClick ToggleYmoji
-                    , widgetPickHeaderStyle
+            span []
+                [ span
+                    [ widgetBtnToogleStyle
                     ]
-                    [ text "x"
+                    [ text "😊"
                     ]
-                    |> Html.map ymojiMsg
-                , emojidb
-                    |> List.map mapToHtmlYmoji
-                    |> div [ ymojiListContainerStyle ]
+                , div
+                    [ widgetPickStyle
+                    ]
+                    [ div
+                        [ onClick ToggleYmoji
+                        , widgetPickHeaderStyle
+                        ]
+                        [ text "x"
+                        ]
+                        |> Html.map ymojiMsg
+                    , emojidb
+                        |> List.map mapToHtmlYmoji
+                        |> div [ ymojiListContainerStyle ]
+                    ]
                 ]
-            ]
     else
         span
             [ onClick ToggleYmoji
-            , widgeBtnTogStyle
+            , widgetBtnToogleStyle
             ]
             [ text "😊"
             ]
@@ -237,10 +237,10 @@ yariReplacebyEmoji str ( unicodeEmoji, asciiEmoji ) =
                     asciiLength =
                         String.length asciiEmoji
                 in
-                if String.length match.match == asciiLength then
-                    unicodeEmoji
-                else
-                    unicodeEmoji ++ String.dropLeft asciiLength match.match
+                    if String.length match.match == asciiLength then
+                        unicodeEmoji
+                    else
+                        unicodeEmoji ++ String.dropLeft asciiLength match.match
             )
 
 
