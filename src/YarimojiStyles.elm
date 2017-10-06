@@ -71,8 +71,8 @@ ymojiListContainerStyle =
         ]
 
 
-widgeBtnTogStyle : Attribute msg
-widgeBtnTogStyle =
+widgetBtnToogleStyle : Attribute msg
+widgetBtnToogleStyle =
     Html.Attributes.style
         [ ( "font-size", "2em" )
         , ( "margin-top", "auto" )

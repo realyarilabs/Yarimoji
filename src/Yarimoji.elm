@@ -44,7 +44,7 @@ Elm and Elixir, promoted by [Yarilabs](http://www.yarilabs.com/).
 
 # Other utils functions
 
-@docs yariMojiTranslate, yariFindEmoji, yariCheckEmoji, yariReplacebyEmoji
+@docs yariMojiTranslate, yariFindEmoji, yariCheckEmoji, yariReplacebyEmoji, yariMojiTranslateAll
 
 
 # Emoji database
@@ -148,31 +148,31 @@ ymojiPickup msg ymojiMsg ymodel =
                     [ text ymoji
                     ]
         in
-        span []
-            [ span
-                [ widgeBtnTogStyle
-                ]
-                [ text "😊"
-                ]
-            , div
-                [ widgetPickStyle
-                ]
-                [ div
-                    [ onClick ToggleYmoji
-                    , widgetPickHeaderStyle
+            span []
+                [ span
+                    [ widgetBtnToogleStyle
                     ]
-                    [ text "x"
+                    [ text "😊"
                     ]
-                    |> Html.map ymojiMsg
-                , emojidb
-                    |> List.map mapToHtmlYmoji
-                    |> div [ ymojiListContainerStyle ]
+                , div
+                    [ widgetPickStyle
+                    ]
+                    [ div
+                        [ onClick ToggleYmoji
+                        , widgetPickHeaderStyle
+                        ]
+                        [ text "x"
+                        ]
+                        |> Html.map ymojiMsg
+                    , emojidb
+                        |> List.map mapToHtmlYmoji
+                        |> div [ ymojiListContainerStyle ]
+                    ]
                 ]
-            ]
     else
         span
             [ onClick ToggleYmoji
-            , widgeBtnTogStyle
+            , widgetBtnToogleStyle
             ]
             [ text "😊"
             ]
@@ -199,6 +199,14 @@ yariMojiTranslate stringToTranslate emojidb =
         |> yariReplacebyEmoji stringToTranslate
 
 
+{-|
+
+    find and replace all emojis
+        yariMojiTranslateAll "This string :D is the best string :D."
+
+    -- output
+        "This string 😃 is the best string 😃."
+-}
 yariMojiTranslateAll : String -> String
 yariMojiTranslateAll string =
     List.foldl (flip yariReplacebyEmoji) string (yariFindEmoji string)
@@ -237,10 +245,10 @@ yariReplacebyEmoji str ( unicodeEmoji, asciiEmoji ) =
                     asciiLength =
                         String.length asciiEmoji
                 in
-                if String.length match.match == asciiLength then
-                    unicodeEmoji
-                else
-                    unicodeEmoji ++ String.dropLeft asciiLength match.match
+                    if String.length match.match == asciiLength then
+                        unicodeEmoji
+                    else
+                        unicodeEmoji ++ String.dropLeft asciiLength match.match
             )
 
 
