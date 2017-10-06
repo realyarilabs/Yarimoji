@@ -44,7 +44,7 @@ Elm and Elixir, promoted by [Yarilabs](http://www.yarilabs.com/).
 
 # Other utils functions
 
-@docs yariMojiTranslate, yariFindEmoji, yariCheckEmoji, yariReplacebyEmoji
+@docs yariMojiTranslate, yariFindEmoji, yariCheckEmoji, yariReplacebyEmoji, yariMojiTranslateAll
 
 
 # Emoji database
@@ -199,6 +199,14 @@ yariMojiTranslate stringToTranslate emojidb =
         |> yariReplacebyEmoji stringToTranslate
 
 
+{-|
+
+    Find and replace ex:
+        yariMojiTranslateAll "This string :D is the best string :D . :D "
+
+    -- output
+        "This string 😃 is the best string 😃 . 😃"
+-}
 yariMojiTranslateAll : String -> String
 yariMojiTranslateAll string =
     List.foldl (flip yariReplacebyEmoji) string (yariFindEmoji string)
